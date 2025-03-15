@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piattaforma Feedback</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .logo-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 80%;
+            max-height: 100px;
+            object-fit: contain; /* Mantiene le proporzioni senza distorcere */
+        }
+        h2 {
+            color: #272d5f;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        select, textarea, input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #272d5f;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 18px;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="logo.png" alt="Logo" class="logo"> <!-- Cambia "logo.png" con il tuo file -->
+        </div>
+        <h2>Invia il tuo feedback</h2>
+        <form id="feedbackForm">
+            <label for="sito">Sito Web:</label>
+            <select id="sito" required>
+                <option value="">Seleziona un sito</option>
+                <option value="informaticbot.my.canva.site">Informaticbot Il Sito Ufficiale</option>
+                <!-- Aggiungi altri siti qui -->
+            </select>
+
+            <label for="problema">Tipo di problema:</label>
+            <select id="problema" required onchange="toggleAltro()">
+                <option value="">Seleziona un problema</option>
+                <option value="Errore di caricamento">Errore di caricamento</option>
+                <option value="Link non funzionante">Link non funzionante</option>
+                <option value="Problema di design">Problema di design</option>
+                <option value="Bug o malfunzionamento">Bug o malfunzionamento</option>
+                <option value="Altro">Altro</option>
+            </select>
+
+            <textarea id="altroProblema" placeholder="Descrivi il problema..." style="display: none;"></textarea>
+
+            <label for="feedback">Feedback (max 500 caratteri):</label>
+            <textarea id="feedback" maxlength="500" required></textarea>
+
+            <label for="email">La tua Email:</label>
+            <input type="email" id="email" required>
+
+            <button type="submit" id="invia" disabled>INVIA</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById("feedbackForm");
+            const sito = document.getElementById("sito");
+            const problema = document.getElementById("problema");
+            const altroProblema = document.getElementById("altroProblema");
+            const feedback = document.getElementById("feedback");
+            const email = document.getElementById("email");
+            const invia = document.getElementById("invia");
+
+            function checkForm() {
+                if (
+                    sito.value &&
+                    problema.value &&
+                    (problema.value !== "Altro" || altroProblema.value.trim()) &&
+                    feedback.value.trim() &&
+                    email.value.trim()
+                ) {
+                    invia.disabled = false;
+                } else {
+                    invia.disabled = true;
+                }
+            }
+
+            function toggleAltro() {
+                if (problema.value === "Altro") {
+                    altroProblema.style.display = "block";
+                    altroProblema.setAttribute("required", "true"); // Rende il campo obbligatorio
+                } else {
+                    altroProblema.style.display = "none";
+                    altroProblema.removeAttribute("required"); // Rimuove l'obbligatorietà se non è selezionato "Altro"
+                    altroProblema.value = "";
+                }
+                checkForm();
+            }
+
+            sito.addEventListener("change", checkForm);
+            problema.addEventListener("change", toggleAltro);
+            altroProblema.addEventListener("input", checkForm);
+            feedback.addEventListener("input", checkForm);
+            email.addEventListener("input", checkForm);
+
+            form.addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                let messaggio = `
+                    Sito: ${sito.value}
+                    Problema: ${problema.value}
+                    ${problema.value === "Altro" ? "Descrizione: " + altroProblema.value : ""}
+                    Feedback: ${feedback.value}
+                    Email: ${email.value}
+                `;
+
+                window.location.href = `mailto:informaticbot3313@gmail.com?subject=Feedback&body=${encodeURIComponent(messaggio)}`;
+            });
+        });
+    </script>
+</body>
+</html>
